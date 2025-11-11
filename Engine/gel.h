@@ -2,6 +2,8 @@
 
 // para incluir en aplicaciones
 
-#include "dep/Application.h"
+#include "dep/App.h"
 #include "dep/Utils.h"
 #include "dep/EntryPoint.h"
+#include "dep/GLFWContext.h"
+#include "dep/Window.h"

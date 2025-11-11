@@ -3,7 +3,7 @@
 
 ---
 
-2 partes separadas: **Engine** y **Sandbox**
+2 partes separadas: **Engine** y **Play**
 
 ### Engine:
 **Application.h** declara la clase Application y la función "*CreateApplication()*",  que devuelve un "*Aplicattion\** ". (Se define en cliente, osea SandboxApp.cpp).

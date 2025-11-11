@@ -6,6 +6,11 @@
 
 namespace GEL {
 
+    struct Color3 {
+    float r, g, b;
+    };
+
+    // LOGEO
     enum class LogLevel {
         Info,
         Warning,

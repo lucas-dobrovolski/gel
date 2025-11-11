@@ -1,10 +1,10 @@
 #pragma once
 
-extern GEL::Application* GEL::CreateApplication();
+extern GEL::App* GEL::CreateApp();
 
 int main(int argc, char* argv[]){
 
-    auto app = GEL::CreateApplication();
+    auto app = GEL::CreateApp();
     app->run();
     delete app;
 }

@@ -5,31 +5,52 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # -----------------------------
+# Dependencias
+# -----------------------------
+find_package(OpenGL REQUIRED)
 
+# Intentar encontrar GLFW
+find_package(glfw3 QUIET)
+if (NOT glfw3_FOUND)
+    message(STATUS "glfw3 not found via find_package, trying pkg-config...")
+    find_package(PkgConfig REQUIRED)
+    pkg_search_module(GLFW REQUIRED glfw3)
+endif()
 
 # -----------------------------
-add_library(gel SHARED # Biblioteca compartida (gel)
-    Engine/src/Application.cpp    
+# Biblioteca del motor
+# -----------------------------
+add_library(gel SHARED
+    Engine/src/App.cpp  
+    Engine/src/Window.cpp  
 )
 
-target_include_directories(gel PUBLIC # Incluir headers de todo el motor
-    ${CMAKE_CURRENT_SOURCE_DIR}/Engine        # para gel.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/Engine/dep    # para headers dentro de dep/
+target_include_directories(gel PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/Engine
+    ${CMAKE_CURRENT_SOURCE_DIR}/Engine/dep
 )
 
+# Enlazar dependencias al motor
+if (TARGET glfw)
+    target_link_libraries(gel PRIVATE glfw OpenGL::GL)
+elseif (GLFW_FOUND)
+    target_link_libraries(gel PRIVATE ${GLFW_LIBRARIES} OpenGL::GL)
+else()
+    target_link_libraries(gel PRIVATE glfw3 OpenGL::GL)
+endif()
 
+# -----------------------------
+# Ejecutable de prueba (Play)
+# -----------------------------
+add_executable(app Play/Play.cpp)
 
-add_executable(app Sandbox/SandboxApp.cpp) # Ejecutable (SandboxApp)
+target_link_libraries(app PRIVATE gel)
 
-target_link_libraries(app PRIVATE gel) # Enlazar app con la librería
-
-#### cosas mas especificas
-
-set_target_properties(app PROPERTIES #decirle dónde buscar la .so/.dll en tiempo de ejecución
+set_target_properties(app PROPERTIES
     BUILD_RPATH "${CMAKE_CURRENT_SOURCE_DIR}/Engine"
 )
 
-if (WIN32) # si es en windows copiar la DLL junto al ejecutable
+if (WIN32)
     add_custom_command(TARGET app POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
             $<TARGET_FILE:gel>
