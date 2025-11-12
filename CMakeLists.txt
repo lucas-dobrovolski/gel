@@ -1,59 +1,55 @@
-cmake_minimum_required(VERSION 3.10)
-project(GEL)
+cmake_minimum_required(VERSION 3.16)
+project(GelProject LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# -----------------------------
-# Dependencias
-# -----------------------------
+# --- Dependencias de bajo nivel ---
 find_package(OpenGL REQUIRED)
 
-# Intentar encontrar GLFW
-find_package(glfw3 QUIET)
-if (NOT glfw3_FOUND)
-    message(STATUS "glfw3 not found via find_package, trying pkg-config...")
-    find_package(PkgConfig REQUIRED)
-    pkg_search_module(GLFW REQUIRED glfw3)
-endif()
+find_package(glfw3 REQUIRED)
 
-# -----------------------------
-# Biblioteca del motor
-# -----------------------------
-add_library(gel SHARED
-    Engine/src/App.cpp  
-    Engine/src/Window.cpp  
+
+
+# --- Motor (Engine) ---
+file(GLOB_RECURSE ENGINE_SOURCES
+Engine/src/*.cpp
+Engine/external/glad/src/glad.c
 )
+
+add_library(gel SHARED ${ENGINE_SOURCES})
+
+target_link_libraries(gel PRIVATE glfw OpenGL::GL)
 
 target_include_directories(gel PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/Engine
-    ${CMAKE_CURRENT_SOURCE_DIR}/Engine/dep
+    Engine/
+    Engine/include
+    Engine/external/glad/include
+    Engine/external/imgui
 )
 
-# Enlazar dependencias al motor
-if (TARGET glfw)
-    target_link_libraries(gel PRIVATE glfw OpenGL::GL)
-elseif (GLFW_FOUND)
-    target_link_libraries(gel PRIVATE ${GLFW_LIBRARIES} OpenGL::GL)
-else()
-    target_link_libraries(gel PRIVATE glfw3 OpenGL::GL)
-endif()
+target_compile_definitions(gel PRIVATE GEL_BUILD_DLL)
+target_compile_definitions(gel PUBLIC GEL_DLL)
 
-# -----------------------------
-# Ejecutable de prueba (Play)
-# -----------------------------
-add_executable(app Play/Play.cpp)
-
-target_link_libraries(app PRIVATE gel)
-
-set_target_properties(app PROPERTIES
-    BUILD_RPATH "${CMAKE_CURRENT_SOURCE_DIR}/Engine"
+# --- Ejecutable principal ---
+file(GLOB_RECURSE APP_SOURCES
+    Play/*.cpp
 )
 
-if (WIN32)
-    add_custom_command(TARGET app POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            $<TARGET_FILE:gel>
-            $<TARGET_FILE_DIR:app>
-    )
-endif()
+add_executable(Play ${APP_SOURCES})
+target_link_libraries(Play PRIVATE gel)
+
+# --- Segundo ejecutable (Editor) ---
+file(GLOB_RECURSE EDITOR_SOURCES
+    Editor/*.cpp
+)
+
+add_executable(Editor ${EDITOR_SOURCES})
+target_link_libraries(Editor PRIVATE gel)
+
+# --- Opcional: salida más limpia ---
+set_target_properties(Play Editor gel PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+    ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+)

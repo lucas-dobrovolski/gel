@@ -1,11 +1,11 @@
-#include <gel.h>
+#include "gel.h"
 
 class Play : public GEL::App
 {
     public:
     Play()
     {
-        
+        LOG_INFO("Play");
     }
     ~Play()
     {
