@@ -4,6 +4,17 @@ project(GelProject LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(IMGUI_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/Engine/external/imgui/imgui.cpp    
+    ${CMAKE_CURRENT_SOURCE_DIR}/Engine/external/imgui/imgui_demo.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Engine/external/imgui/imgui_draw.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Engine/external/imgui/imgui_widgets.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Engine/external/imgui/imgui_tables.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Engine/external/imgui/backends/imgui_impl_glfw.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Engine/external/imgui/backends/imgui_impl_opengl3.cpp
+)
+
+
 # --- Dependencias de bajo nivel ---
 find_package(OpenGL REQUIRED)
 
@@ -15,9 +26,11 @@ find_package(glfw3 REQUIRED)
 file(GLOB_RECURSE ENGINE_SOURCES
 Engine/src/*.cpp
 Engine/external/glad/src/glad.c
+${IMGUI_SOURCES} 
 )
 
-add_library(gel SHARED ${ENGINE_SOURCES})
+add_library(gel SHARED ${ENGINE_SOURCES}
+)
 
 target_link_libraries(gel PRIVATE glfw OpenGL::GL)
 
@@ -26,6 +39,7 @@ target_include_directories(gel PUBLIC
     Engine/include
     Engine/external/glad/include
     Engine/external/imgui
+ 
 )
 
 target_compile_definitions(gel PRIVATE GEL_BUILD_DLL)

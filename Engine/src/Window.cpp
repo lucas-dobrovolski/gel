@@ -39,9 +39,9 @@ void Window::pollEvents()
     glfwPollEvents();
 }
 
-void Window::clear(Color3 color)
+void Window::clear(vec3 color)
 {
-    glClearColor(color.r, color.g, color.b, 1.0f);
+    glClearColor(color.x1, color.x2, color.x3, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
@@ -51,4 +51,7 @@ void Window::setVSync(bool enabled)
     glfwSwapInterval(vsyncEnabled ? 1 : 0);
 }
 
+GLFWwindow* Window::GetGLFWwindow() const {
+    return window;
+}
 }

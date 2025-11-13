@@ -26,11 +26,12 @@ namespace GEL {
 
             void pollEvents();
 
-            void clear(Color3); 
+            void clear(vec3); 
 
             void setVSync(bool enabled);
             bool isVSyncEnabled() const { return vsyncEnabled; }
 
+            GLFWwindow* GetGLFWwindow() const;
     };
 
 }

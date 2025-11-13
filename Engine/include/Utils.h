@@ -6,8 +6,17 @@
 
 namespace GEL {
 
-    struct Color3 {
-    float r, g, b;
+
+    struct vec2 {
+    float x1, x2;
+    };
+
+    struct vec3 {
+    float x1, x2, x3;
+    };
+
+    struct vec4 {
+    float x1, x2, x3, x4;
     };
 
     // LOGEO
