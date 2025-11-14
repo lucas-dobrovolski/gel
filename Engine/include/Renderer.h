@@ -15,6 +15,7 @@ namespace GEL {
             void draw(const World& world);
             //void renderEditorOverlay(const EditorOverlay& overlay);
 
+            vec3 GetClearColor() const;
 
             void EndFrame(Window& window);
     };

@@ -56,15 +56,22 @@ void UI::EndFrame() {
 // ----------------------------
 // EditorUI
 // ----------------------------
-void EditorUI::Draw() {
+void EditorUI::Draw(Renderer& renderer) {
 
     //ImGui::DockSpaceOverViewport(); si se activa el docker
 
-    ImGui::Begin("Editor");
-    ImGui::Text("Editor");
+    ImGui::Begin("Renderer");
+    ImGui::Text("Color de fondo (ClearColor)");
+    
+    static float color[3] = {0.07f, 0.07f, 0.1f};
+
+    if (ImGui::ColorEdit3("Clear Color", color)) {
+        renderer.SetClearColor({color[0], color[1], color[2]});}
     ImGui::End();
     
-    
+    ImGui::Begin("tet");
+    ImGui::Text("Ctext");
+    ImGui::End();
 }
 
 // ----------------------------

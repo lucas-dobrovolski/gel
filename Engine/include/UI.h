@@ -1,7 +1,7 @@
 #pragma once
 #include <imgui.h>
 #include "Window.h"
-
+#include "Renderer.h"
 namespace GEL {
 
 // ----------------------------
@@ -22,7 +22,7 @@ public:
 class EditorUI {
 public:
     bool showDemo = true;
-    void Draw();
+    void Draw(Renderer& renderer);
 };
 
 // ----------------------------
